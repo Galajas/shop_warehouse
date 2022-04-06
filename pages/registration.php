@@ -58,7 +58,7 @@ if (isset($_POST['email'])) {
 }
 
 ?>
-<h1>Register</h1>
+<h1>Registracija</h1>
 <form action="index.php?page=register" method="post">
     <table>
         <tr>

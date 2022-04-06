@@ -1,8 +1,10 @@
 <h1>Pagrindinis</h1>
 <h3>
     <?php
+    if (isLoged()) {
         ?> Sveiki <?php
-        switch (loggedInEmployeesData('role')) {
+        $email = $_SESSION['email'];
+        switch (employeesData($email, 'role')) {
             case 'warehouse_worker':
                 echo 'sandelio darbuotojas ';
                 break;
@@ -10,7 +12,14 @@
                 echo 'parduotuves darbuotojas ';
                 break;
         }
-        echo loggedInEmployeesData('name');
+        echo employeesData($email, 'name');
         ?>
         prisijunge.
+        <?php
+    } else {
+        ?>
+        Prasome prisijungti.
+        <?php
+    }
+    ?>
 </h3>

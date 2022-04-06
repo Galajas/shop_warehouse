@@ -34,8 +34,8 @@ include_once 'config.php';
             </td>
         <?php } ?>
         <?php if (isLoged() === true) {
-
-            switch (loggedInEmployeesData('role')) {
+            $email = $_SESSION['email'];
+            switch (employeesData($email, 'role')) {
                 case 'warehouse_worker':
                     ?>
                     <td>
@@ -53,7 +53,7 @@ include_once 'config.php';
             }
             ?>
             <td>
-            <a href="index.php?page=logout">Atsijungti</a>
+                <a href="index.php?page=logout">Atsijungti</a>
             </td>
         <?php } ?>
     </tr>
@@ -76,7 +76,7 @@ switch ($page) {
     case 'shop':
         include 'pages/shop.php';
         break;
-        case 'logout':
+    case 'logout':
         include 'pages/logout.php';
         break;
 }

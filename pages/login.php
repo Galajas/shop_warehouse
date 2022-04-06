@@ -9,15 +9,12 @@ if (isset($_POST['email'])) {
         $errors[] = 'Yra tusciu lauku';
     }
 
-    $checkEmail = mysqli_query($database, "SELECT * FROM employees WHERE email = '$email'");
-    $checkEmail = mysqli_fetch_row($checkEmail);
+    $checkEmail = employeesData($email, 'email');
 
     if (!$checkEmail) {
         $errors[] = 'Pasto nera';
     } else {
-        $get_password = mysqli_query($database, "SELECT password FROM employees WHERE email = '$email'");
-        $get_password = mysqli_fetch_array($get_password);
-        $get_password = $get_password['password'];
+        $get_password = employeesData($email, 'password');
 
         if ($password != $get_password) {
             $errors[] = 'blogas slaptazodis';

@@ -22,11 +22,13 @@ function isLoged(): bool
     }
 }
 
-function loggedInEmployeesData($data)
+function employeesData($email, $data)
 {
-    $email = $_SESSION['email'];
-    $database = mysqli_connect('127.0.0.1', 'root', '', 'shop_warehouse');
-    $get_user = mysqli_query($database, "SELECT * FROM employees WHERE email = '$email'");
-    $get_user = mysqli_fetch_object($get_user);
-    return $get_user->$data;
+        $database = mysqli_connect('127.0.0.1', 'root', '', 'shop_warehouse');
+        $get_user = mysqli_query($database, "SELECT * FROM employees WHERE email = '$email'");
+        $get_user = mysqli_fetch_object($get_user);
+        return $get_user->$data;
 }
+
+
+

@@ -25,7 +25,6 @@ include_once 'config.php';
         <td>
             <a href="index.php">Home</a>
         </td>
-
         <?php if (isLoged() === false) { ?>
             <td>
                 <a href="index.php?page=login">Login</a>
@@ -34,15 +33,27 @@ include_once 'config.php';
                 <a href="index.php?page=register">Register</a>
             </td>
         <?php } ?>
-        <?php if (isLoged() === true) { ?>
+        <?php if (isLoged() === true) {
+
+            switch (loggedInEmployeesData('role')) {
+                case 'warehouse_worker':
+                    ?>
+                    <td>
+                        <a href="index.php?page=warehouse">Sandelio valdymas</a>
+                    </td>
+                    <?php
+                    break;
+                case 'shop_worker':
+                    ?>
+                    <td>
+                        <a href="index.php?page=shop">Parduotuves valdymas</a>
+                    </td>
+                    <?php
+                    break;
+            }
+            ?>
             <td>
-                <a href="index.php?page=warehouse">Sandelio valdymas</a>
-            </td>
-            <td>
-                <a href="index.php?page=shop">Parduotuves valdymas</a>
-            </td>
-            <td>
-                <a href="index.php?page=logout">Atsijungti</a>
+            <a href="index.php?page=logout">Atsijungti</a>
             </td>
         <?php } ?>
     </tr>
@@ -64,6 +75,9 @@ switch ($page) {
         break;
     case 'shop':
         include 'pages/shop.php';
+        break;
+        case 'logout':
+        include 'pages/logout.php';
         break;
 }
 ?>

@@ -25,12 +25,26 @@ include_once 'config.php';
         <td>
             <a href="index.php">Home</a>
         </td>
-        <td>
-            <a href="index.php?page=login">Prisijungti</a>
-        </td>
-        <td>
-            <a href="index.php?page=register">Registruotis</a>
-        </td>
+
+        <?php if (isLoged() === false) { ?>
+            <td>
+                <a href="index.php?page=login">Login</a>
+            </td>
+            <td>
+                <a href="index.php?page=register">Register</a>
+            </td>
+        <?php } ?>
+        <?php if (isLoged() === true) { ?>
+            <td>
+                <a href="index.php?page=warehouse">Sandelio valdymas</a>
+            </td>
+            <td>
+                <a href="index.php?page=shop">Parduotuves valdymas</a>
+            </td>
+            <td>
+                <a href="index.php?page=logout">Atsijungti</a>
+            </td>
+        <?php } ?>
     </tr>
 </table>
 
@@ -44,6 +58,12 @@ switch ($page) {
         break;
     case 'login':
         include 'pages/login.php';
+        break;
+    case 'warehouse':
+        include 'pages/warehouse.php';
+        break;
+    case 'shop':
+        include 'pages/shop.php';
         break;
 }
 ?>

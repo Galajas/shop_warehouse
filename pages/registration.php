@@ -7,7 +7,6 @@ if (isset($_POST['email'])) {
     $password2 = $_POST['password2'];
     $name = $_POST['name'];
 
-
     $errors = [];
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -38,8 +37,7 @@ if (isset($_POST['email'])) {
         $errors['password2'][] = 'Slaprazodiai nesutampa';
     }
 
-    $checkEmail = mysqli_query($database, "SELECT * FROM employees WHERE email = '$email'");
-    $checkEmail = mysqli_fetch_row($checkEmail);
+    $checkEmail = getEmployeesData($email, 'email');
     if ($checkEmail != null) {
         $errors['email'][] = 'Pastas uzimtas';
     }

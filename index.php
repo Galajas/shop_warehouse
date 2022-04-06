@@ -14,7 +14,6 @@ include_once 'config.php';
     table {
         padding: 10px;
     }
-
     td {
         padding: 10px;
     }
@@ -35,7 +34,7 @@ include_once 'config.php';
         <?php } ?>
         <?php if (isLoged() === true) {
             $email = $_SESSION['email'];
-            switch (employeesData($email, 'role')) {
+            switch (getEmployeesData($email, 'role')) {
                 case 'warehouse_worker':
                     ?>
                     <td>

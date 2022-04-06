@@ -4,7 +4,7 @@
     if (isLoged()) {
         ?> Sveiki <?php
         $email = $_SESSION['email'];
-        switch (employeesData($email, 'role')) {
+        switch (getEmployeesData($email, 'role')) {
             case 'warehouse_worker':
                 echo 'sandelio darbuotojas ';
                 break;
@@ -12,7 +12,7 @@
                 echo 'parduotuves darbuotojas ';
                 break;
         }
-        echo employeesData($email, 'name');
+        echo getEmployeesData($email, 'name');
         ?>
         prisijunge.
         <?php

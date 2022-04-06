@@ -9,12 +9,12 @@ if (isset($_POST['email'])) {
         $errors[] = 'Yra tusciu lauku';
     }
 
-    $checkEmail = employeesData($email, 'email');
+    $checkEmail = getEmployeesData($email, 'email');
 
     if (!$checkEmail) {
         $errors[] = 'Pasto nera';
     } else {
-        $get_password = employeesData($email, 'password');
+        $get_password = getEmployeesData($email, 'password');
 
         if ($password != $get_password) {
             $errors[] = 'blogas slaptazodis';

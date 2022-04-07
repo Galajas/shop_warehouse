@@ -2,16 +2,28 @@
 
 <?php
 if (isLoged()) {
-    if (isset($_POST['product_name']))  {
+    if (isset($_POST['product_name'])) {
         $product_name = $_POST['product_name'];
         $product_category = $_POST['product_category'];
         $product_price = $_POST['product_price'];
         $product_validity_days = $_POST['product_validity_days'];
 
-
         $errors = [];
-        
 
+        $get_product_name = mysqli_query($database, "SELECT * FROM products where product_name = '$product_name'");
+        $get_product_name = mysqli_fetch_row($get_product_name);
+
+        if ($get_product_name != null) {
+            $errors[] = 'Toks produktas jau yra';
+        }
+
+        if (empty($errors)) {
+            $sql = "insert into products (product_category, product_name, product_price, product_validity_days) value ('$product_category', '$product_name', '$product_price', '$product_validity_days')";
+            mysqli_query($database, $sql);
+            echo 'Produktas pridetas';
+        } else {
+            echo 'Klaida';
+        }
     }
 
     ?>

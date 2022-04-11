@@ -1,6 +1,6 @@
 <?php
 $action = $_GET['action'] ?? null;
-$action_id = $_GET['id'] ?? null;
+
 ?>
 <h1>Sandelio valdymas</h1>
 <br>
@@ -44,9 +44,48 @@ if (isset($_POST['product_name'])) {
     }
 }
 
+
+if (isset($_POST['product_balance'])) {
+    $product_id = $_POST['product_id'];
+    $balance = $_POST['product_balance'];
+
+    $errors = [];
+
+    if (!preg_match('/[0-9]/', $balance)) {
+        $errors[] = 'kiekis turi buti tik skaicius';
+    }
+    if ($balance <= 1) {
+        $errors[] = 'kiekis turi buti tik sveikasis skaicius';
+    }
+
+    if (empty($errors)) {
+        $check_warehouse_product = mysqli_query($database, "SELECT * FROM warehouse_products where product_id = '$product_id'");
+        $check_warehouse_product = mysqli_fetch_array($check_warehouse_product, );
+
+        if ($check_warehouse_product != null) {
+            $update_balance = $check_warehouse_product['product_balance'] + $balance;
+
+            $sql = "update warehouse_products set product_balance = '$update_balance' where id = '$product_id'";
+            echo 'Sandelis papildytas';
+        } else {
+            $sql = "insert into warehouse_products (product_id, product_balance) value ('$product_id', '$balance')";
+            echo 'Sandelis papildytas';
+        }
+        mysqli_query($database, $sql);
+    } else {
+        if (isset($errors)) {
+            foreach ($errors as $error) {
+                ?>
+                <li>
+                    <?php echo $error ?>
+                </li>
+            <?php }
+        }
+    }
+}
 ?>
 
-<h3>Produktu pridejimas</h3>
+<h3>Produkto pridejimas</h3>
 
 <form action="index.php?page=warehouse" method="post">
     <table class="table">
@@ -138,8 +177,6 @@ if (isset($_POST['product_name'])) {
     $get_products = mysqli_query($database, "SELECT * FROM products");
     $get_products = mysqli_fetch_all($get_products, MYSQLI_ASSOC);
 
-
-
     foreach ($get_products as $product) {
         $id = $product["id"];
         $category = $product["product_category"];
@@ -147,7 +184,14 @@ if (isset($_POST['product_name'])) {
         $price = $product["product_price"];
         $validity = $product["product_validity_days"];
 
+        $product_balance = mysqli_query($database, "SELECT product_balance FROM warehouse_products where product_id = '$id'");
+        $product_balance = mysqli_fetch_object($product_balance);
 
+        if($product_balance != null) {
+            $product_balance = $product_balance->product_balance;
+        } else {
+            $product_balance = 0;
+        }
         ?>
         <tr>
             <td>
@@ -181,60 +225,27 @@ if (isset($_POST['product_name'])) {
                 <?php echo $validity ?>
             </td>
             <td>
-                Kiekis sandelyje
+                <?php echo $product_balance ?>
             </td>
             <td>
                 <?php
-
-                // sekancia diena padaryti kad veiktu tik su postu
-
-                if ($action === "addBalance" && $action_id === $id) {
-
-                    if (isset($_POST['product_balance'])) {
-                        $balance = $_POST['product_balance'];
-                        $id = $_POST['product_id'];
-
-                        $errors = [];
-
-//                        $get_product_name = mysqli_query($database, "SELECT * FROM warehouse_products where product_name = '$product_name'");
-//                        $get_product_name = mysqli_fetch_row($get_product_name);
-
-                        if (!preg_match('/[0-9]/', $balance)) {
-                            $errors[] = 'kiekis turi buti tik skaicius';
-                        }
-                        if ($balance <= 1) {
-                            $errors[] = 'kiekis turi buti tik sveikasis skaicius';
-                        }
-
-                        if (empty($errors)) {
-                            $sqlas = "insert into warehouse_products (product_id, product_balance) value ('$id', '$balance')";
-                            mysqli_query($database, $sqlas);
-                            echo 'Sandelis papildytas';
-                        } else {
-                            if (isset($errors)) {
-                                foreach ($errors as $error) {
-                                    ?>
-                                    <li>
-                                        <?php echo $error ?>
-                                    </li>
-                                <?php }
-                            }
-                        }
-                    }
+                if ($action === "fillWarehouse" && $_POST['product_id'] === $id) {
                     ?>
-                    <form action="index.php?page=warehouse&action=addBalance&id=<?php echo $id ?>" method="post" style="display: flex; flex-direction: column">
+                    <form action="index.php?page=warehouse" method="post"
+                          style="display: flex; flex-direction: column">
                         <input type="hidden" name="product_id" value="<?php echo $id ?>">
                         <span> Prideti i sandeli:</span>
-
                         <input style="width: 110px" type="number" name="product_balance" placeholder="kiekis">
-
                         <button style="width: 110px" type="submit">Prideti i sandeli</button>
-
                     </form>
                     <?php
                 } else {
                     ?>
-                    <a href="index.php?page=warehouse&action=addBalance&id=<?php echo $id ?>">Prideti i sandeli</a>
+                    <form action="index.php?page=warehouse&action=fillWarehouse" method="post">
+                        <input type="hidden" name="product_id" value="<?php echo $id ?>">
+                        <button type="submit">Papildyti sandeli</button>
+                    </form>
+
                 <?php } ?>
             </td>
             <td>

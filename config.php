@@ -13,6 +13,21 @@ if (!$database) {
 
 $page = $_REQUEST['page'] ?? null;
 
+//enum('dairy', 'vegetables', 'fruits', 'meat', 'drinks')
+
+const PRODUCT_CATEGORY_MEAT = ['meat', 'Mesa'];
+const PRODUCT_CATEGORY_VEGETABLES = ['vegetables', 'Darzoves'];
+const PRODUCT_CATEGORY_FRUITS = ['fruits', 'Vaisiai'];
+const PRODUCT_CATEGORY_DAIRY = ['dairy', 'Pieno produktai'];
+const PRODUCT_CATEGORY_DRINKS = ['drinks', 'Gerimai'];
+const PRODUCT_CATEGORIES = [
+    PRODUCT_CATEGORY_MEAT,
+    PRODUCT_CATEGORY_VEGETABLES,
+    PRODUCT_CATEGORY_FRUITS,
+    PRODUCT_CATEGORY_DAIRY,
+    PRODUCT_CATEGORY_DRINKS,
+];
+
 function isLoged(): bool
 {
     if (isset($_SESSION['email'])) {

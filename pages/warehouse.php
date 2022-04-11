@@ -104,21 +104,15 @@ if (isset($_POST['product_balance'])) {
             <td>
                 <select name="product_category">
                     <option value="">-</option>
-                    <option value="dairy">
-                        Pieno produktas
-                    </option>
-                    <option value="vegetables">
-                        Darzoves
-                    </option>
-                    <option value="fruits">
-                        Vaisiai
-                    </option>
-                    <option value="meat">
-                        Mesa
-                    </option>
-                    <option value="drinks">
-                        Gerimai
-                    </option>
+                    <?php
+                        foreach (PRODUCT_CATEGORIES as $category) {
+                            ?>
+                            <option value="<?php echo $category[0] ?>">
+                                <?php echo $category[1] ?>
+                            </option>
+                            <?php
+                        }
+                    ?>
                 </select>
             </td>
         </tr>
@@ -177,6 +171,7 @@ if (isset($_POST['product_balance'])) {
     $get_products = mysqli_query($database, "SELECT * FROM products");
     $get_products = mysqli_fetch_all($get_products, MYSQLI_ASSOC);
 
+
     foreach ($get_products as $product) {
         $id = $product["id"];
         $category = $product["product_category"];
@@ -199,27 +194,16 @@ if (isset($_POST['product_balance'])) {
             </td>
             <td>
                 <?php
-                switch ($category) {
-                    case 'meat':
-                        echo 'Mesa';
-                        break;
-                    case 'dairy':
-                        echo 'Pieno produktas';
-                        break;
-                    case 'vegetables':
-                        echo 'Darzoves';
-                        break;
-                    case 'fruits':
-                        echo 'Vaisiai';
-                        break;
-                    case 'drinks':
-                        echo 'Gerimai';
-                        break;
-                }
+                    for ($i = 0; $i < count(PRODUCT_CATEGORIES); $i++) {
+                        if (in_array($category, PRODUCT_CATEGORIES[$i])) {
+                            echo PRODUCT_CATEGORIES[$i][1];
+                        }
+                    }
                 ?>
+
             </td>
             <td>
-                <?php echo $price ?>
+                <?php echo $price ?>€
             </td>
             <td>
                 <?php echo $validity ?>

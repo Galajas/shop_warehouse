@@ -13,33 +13,51 @@ $action = $_GET['action'] ?? null;
 </style>
 <?php
 if (isLoged()) {
-if (isset($_POST['product_name'])) {
-    $product_name = $_POST['product_name'];
-    $product_category = $_POST['product_category'];
-    $product_price = $_POST['product_price'];
-    $product_validity_days = $_POST['product_validity_days'];
 
-    $errors = [];
 
-    $get_product_name = mysqli_query($database, "SELECT * FROM products where product_name = '$product_name'");
-    $get_product_name = mysqli_fetch_row($get_product_name);
+if ($action === 'update') {
+    $id = $_GET['id'];
 
-    if ($get_product_name != null) {
-        $errors[] = 'Toks produktas jau yra';
-    }
+    $get_product = mysqli_query($database, "select * from products where id = '$id'");
+    $get_product = mysqli_fetch_array($get_product, MYSQLI_ASSOC);
 
-    if (empty($errors)) {
-        $sql = "insert into products (product_category, product_name, product_price, product_validity_days) value ('$product_category', '$product_name', '$product_price', '$product_validity_days')";
-        mysqli_query($database, $sql);
-        echo 'Produktas pridetas';
-    } else {
-        if (isset($errors)) {
-            foreach ($errors as $error) {
-                ?>
-                <li>
-                    <?php echo $error ?>
-                </li>
-            <?php }
+    $product_name = $get_product['product_name'];
+    $product_category = $get_product['product_category'];
+    $product_price = $get_product['product_price'];
+    $product_validity_days = $get_product['product_validity_days'];
+
+
+} else {
+
+    if (isset($_POST['product_name'])) {
+
+        $product_name = $_POST['product_name'];
+        $product_category = $_POST['product_category'];
+        $product_price = $_POST['product_price'];
+        $product_validity_days = $_POST['product_validity_days'];
+
+        $errors = [];
+
+        $get_product_name = mysqli_query($database, "SELECT * FROM products where product_name = '$product_name'");
+        $get_product_name = mysqli_fetch_row($get_product_name);
+
+        if ($get_product_name != null) {
+            $errors[] = 'Toks produktas jau yra';
+        }
+
+        if (empty($errors)) {
+            $sql = "insert into products (product_category, product_name, product_price, product_validity_days) value ('$product_category', '$product_name', '$product_price', '$product_validity_days')";
+            mysqli_query($database, $sql);
+            echo 'Produktas pridetas';
+        } else {
+            if (isset($errors)) {
+                foreach ($errors as $error) {
+                    ?>
+                    <li>
+                        <?php echo $error ?>
+                    </li>
+                <?php }
+            }
         }
     }
 }
@@ -85,26 +103,92 @@ if (isset($_POST['product_balance'])) {
 }
 ?>
 
-<h3>Produkto pridejimas</h3>
+<?php
+if ($action === 'update') { ?>
+    <h3>Produkto redagavimas</h3>
 
-<form action="index.php?page=warehouse" method="post">
-    <table class="table">
-        <tr>
-            <td>
-                Produktas:
-            </td>
-            <td>
-                <input type="text" name="product_name">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Produkto kategorija:
-            </td>
-            <td>
-                <select name="product_category">
-                    <option value="">-</option>
-                    <?php
+    <form action="index.php?page=warehouse&action=update&id=<?php echo $id ?>" method="post">
+        <table class="table">
+            <tr>
+                <td>
+                    Produktas:
+                </td>
+                <td>
+                    <input value="<?php echo $product_name ?>" type="text" name="product_name">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Produkto kategorija:
+                </td>
+                <td>
+                    <select name="product_category">
+                        <option value=""></option>
+                        <?php
+                        foreach (PRODUCT_CATEGORIES as $category) {
+                            ?>
+                            <option value="<?php echo $category[0] ?>"
+                                <?php
+                            if ($category[0] == $product_category) {
+                                echo 'selected';
+                            }
+                            ?>
+                            >
+                                <?php echo $category[1] ?>
+                            </option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Kaina:
+                </td>
+                <td>
+                    <input value="<?php echo $product_price ?>" type="number" name="product_price">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Kiek dienu galioja:
+                </td>
+                <td>
+                    <input value="<?php echo $product_validity_days ?>" type="number" name="product_validity_days"
+                           placeholder="ivesti dienu skaiciu">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center">
+                    <button style="width: 200px; height: 30px" type="submit">Atnaujinti</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+
+<?php } else { ?>
+    <h3>Produkto pridejimas</h3>
+
+    <form action="index.php?page=warehouse" method="post">
+        <table class="table">
+            <tr>
+                <td>
+                    Produktas:
+                </td>
+                <td>
+                    <input type="text" name="product_name">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Produkto kategorija:
+                </td>
+                <td>
+                    <select name="product_category">
+                        <option value="">-</option>
+                        <?php
                         foreach (PRODUCT_CATEGORIES as $category) {
                             ?>
                             <option value="<?php echo $category[0] ?>">
@@ -112,33 +196,36 @@ if (isset($_POST['product_balance'])) {
                             </option>
                             <?php
                         }
-                    ?>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Kaina:
-            </td>
-            <td>
-                <input type="number" name="product_price">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Kiek dienu galioja:
-            </td>
-            <td>
-                <input type="number" name="product_validity_days" placeholder="ivesti dienu skaiciu">
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: center">
-                <button style="width: 200px; height: 30px" type="submit">Prideti</button>
-            </td>
-        </tr>
-    </table>
-</form>
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Kaina:
+                </td>
+                <td>
+                    <input type="number" name="product_price">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Kiek dienu galioja:
+                </td>
+                <td>
+                    <input type="number" name="product_validity_days" placeholder="ivesti dienu skaiciu">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center">
+                    <button style="width: 200px; height: 30px" type="submit">Prideti</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+<?php }
+?>
 
 <h3>
     Esami produktai
@@ -164,7 +251,7 @@ if (isset($_POST['product_balance'])) {
             Pridėti kiekį
         </th>
         <th>
-            Atnaujinti
+            Produkto redagavimas
         </th>
     </tr>
     <?php
@@ -182,7 +269,7 @@ if (isset($_POST['product_balance'])) {
         $product_balance = mysqli_query($database, "SELECT product_balance FROM warehouse_products where product_id = '$id'");
         $product_balance = mysqli_fetch_object($product_balance);
 
-        if($product_balance != null) {
+        if ($product_balance != null) {
             $product_balance = $product_balance->product_balance;
         } else {
             $product_balance = 0;
@@ -194,11 +281,11 @@ if (isset($_POST['product_balance'])) {
             </td>
             <td>
                 <?php
-                    for ($i = 0; $i < count(PRODUCT_CATEGORIES); $i++) {
-                        if (in_array($category, PRODUCT_CATEGORIES[$i])) {
-                            echo PRODUCT_CATEGORIES[$i][1];
-                        }
+                for ($i = 0; $i < count(PRODUCT_CATEGORIES); $i++) {
+                    if (in_array($category, PRODUCT_CATEGORIES[$i])) {
+                        echo PRODUCT_CATEGORIES[$i][1];
                     }
+                }
                 ?>
 
             </td>
@@ -233,7 +320,7 @@ if (isset($_POST['product_balance'])) {
                 <?php } ?>
             </td>
             <td>
-                <a href="index.php?page=warehouse&action=update&id=<?php echo $id ?>">Atnaujinti</a>
+                <a href="index.php?page=warehouse&action=update&id=<?php echo $id ?>">Redaguoti</a>
             </td>
         </tr>
     <?php }

@@ -60,12 +60,12 @@ if (isset($_POST['product_balance'])) {
 
     if (empty($errors)) {
         $check_warehouse_product = mysqli_query($database, "SELECT * FROM warehouse_products where product_id = '$product_id'");
-        $check_warehouse_product = mysqli_fetch_array($check_warehouse_product, );
+        $check_warehouse_product = mysqli_fetch_array($check_warehouse_product, MYSQLI_ASSOC);
 
         if ($check_warehouse_product != null) {
             $update_balance = $check_warehouse_product['product_balance'] + $balance;
 
-            $sql = "update warehouse_products set product_balance = '$update_balance' where id = '$product_id'";
+            $sql = "update warehouse_products set product_balance = '$update_balance' where product_id = '$product_id'";
             echo 'Sandelis papildytas';
         } else {
             $sql = "insert into warehouse_products (product_id, product_balance) value ('$product_id', '$balance')";

@@ -1,6 +1,5 @@
 <?php
 $action = $_GET['action'] ?? null;
-
 ?>
 <h1>Sandelio valdymas</h1>
 <br>
@@ -14,23 +13,34 @@ $action = $_GET['action'] ?? null;
 <?php
 if (isLoged()) {
 
-
 if ($action === 'update') {
     $id = $_GET['id'];
 
-    $get_product = mysqli_query($database, "select * from products where id = '$id'");
-    $get_product = mysqli_fetch_array($get_product, MYSQLI_ASSOC);
-
-    $product_name = $get_product['product_name'];
-    $product_category = $get_product['product_category'];
-    $product_price = $get_product['product_price'];
-    $product_validity_days = $get_product['product_validity_days'];
-
-
-} else {
-
     if (isset($_POST['product_name'])) {
+        $product_name = $_POST['product_name'];
+        $product_category = $_POST['product_category'];
+        $product_price = $_POST['product_price'];
+        $product_validity_days = $_POST['product_validity_days'];
 
+        $get_product_name = mysqli_query($database, "SELECT * FROM products where product_name = '$product_name'");
+        $get_product_name = mysqli_fetch_row($get_product_name);
+
+        if (!empty($product_name) && !empty($product_category) && !empty($product_price) && !empty($product_validity_days)) {
+            if ($get_product_name == $product_name) {
+                $update_product = mysqli_query($database, "update products set product_category = '$product_category', product_name = '$product_name', product_price = '$product_price', product_validity_days = '$product_validity_days' where id = '$id'");
+                header('Location: index.php?page=warehouse');
+            } elseif ($get_product_name != null) {
+                echo 'Toks produktas jau yra';
+            } else {
+                $update_product = mysqli_query($database, "update products set product_category = '$product_category', product_name = '$product_name', product_price = '$product_price', product_validity_days = '$product_validity_days' where id = '$id'");
+                header('Location: index.php?page=warehouse');
+            }
+        } else {
+            echo 'Kazkuris laukas tuscias prasome uzpapildyti';
+        }
+    }
+} else {
+    if (isset($_POST['product_name'])) {
         $product_name = $_POST['product_name'];
         $product_category = $_POST['product_category'];
         $product_price = $_POST['product_price'];
@@ -61,7 +71,6 @@ if ($action === 'update') {
         }
     }
 }
-
 
 if (isset($_POST['product_balance'])) {
     $product_id = $_POST['product_id'];
@@ -106,6 +115,15 @@ if (isset($_POST['product_balance'])) {
 <?php
 if ($action === 'update') { ?>
     <h3>Produkto redagavimas</h3>
+    <?php
+    $get_product = mysqli_query($database, "select * from products where id = '$id'");
+    $get_product = mysqli_fetch_array($get_product, MYSQLI_ASSOC);
+
+    $product_name = $get_product['product_name'];
+    $product_category = $get_product['product_category'];
+    $product_price = $get_product['product_price'];
+    $product_validity_days = $get_product['product_validity_days'];
+    ?>
 
     <form action="index.php?page=warehouse&action=update&id=<?php echo $id ?>" method="post">
         <table class="table">
@@ -129,10 +147,10 @@ if ($action === 'update') { ?>
                             ?>
                             <option value="<?php echo $category[0] ?>"
                                 <?php
-                            if ($category[0] == $product_category) {
-                                echo 'selected';
-                            }
-                            ?>
+                                if ($category[0] == $product_category) {
+                                    echo 'selected';
+                                }
+                                ?>
                             >
                                 <?php echo $category[1] ?>
                             </option>
@@ -166,7 +184,6 @@ if ($action === 'update') { ?>
             </tr>
         </table>
     </form>
-
 
 <?php } else { ?>
     <h3>Produkto pridejimas</h3>
@@ -258,7 +275,6 @@ if ($action === 'update') { ?>
     $get_products = mysqli_query($database, "SELECT * FROM products");
     $get_products = mysqli_fetch_all($get_products, MYSQLI_ASSOC);
 
-
     foreach ($get_products as $product) {
         $id = $product["id"];
         $category = $product["product_category"];
@@ -287,7 +303,6 @@ if ($action === 'update') { ?>
                     }
                 }
                 ?>
-
             </td>
             <td>
                 <?php echo $price ?>€
@@ -316,7 +331,6 @@ if ($action === 'update') { ?>
                         <input type="hidden" name="product_id" value="<?php echo $id ?>">
                         <button type="submit">Papildyti sandeli</button>
                     </form>
-
                 <?php } ?>
             </td>
             <td>

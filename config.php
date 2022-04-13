@@ -45,6 +45,16 @@ const MARGIN_CATEGORIES = [
     MARGIN_CATEGORY_COMMON
 ];
 
+function mutateArray ($arrays) {
+    foreach ($arrays as $array) {
+        $first = $array[0];
+        $second = $array[1];
+        $combo[$first] = $second;
+    }
+    return $combo;
+}
+
+
 function isLoged(): bool
 {
     if (isset($_SESSION['email'])) {

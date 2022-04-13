@@ -28,6 +28,23 @@ const PRODUCT_CATEGORIES = [
     PRODUCT_CATEGORY_DRINKS,
 ];
 
+const MARGIN_CATEGORY_MEAT = ['meat', 'Mesa'];
+const MARGIN_CATEGORY_VEGETABLES = ['vegetables', 'Darzoves'];
+const MARGIN_CATEGORY_FRUITS = ['fruits', 'Vaisiai'];
+const MARGIN_CATEGORY_DAIRY = ['dairy', 'Pieno produktai'];
+const MARGIN_CATEGORY_DRINKS = ['drinks', 'Gerimai'];
+const MARGIN_CATEGORY_VALIDITY = ['validity_to_end', 'Galiojimas i pabaiga'];
+const MARGIN_CATEGORY_COMMON = ['common', 'Bendra'];
+const MARGIN_CATEGORIES = [
+    MARGIN_CATEGORY_MEAT,
+    MARGIN_CATEGORY_VEGETABLES,
+    MARGIN_CATEGORY_FRUITS,
+    MARGIN_CATEGORY_DAIRY,
+    MARGIN_CATEGORY_DRINKS,
+    MARGIN_CATEGORY_VALIDITY,
+    MARGIN_CATEGORY_COMMON
+];
+
 function isLoged(): bool
 {
     if (isset($_SESSION['email'])) {

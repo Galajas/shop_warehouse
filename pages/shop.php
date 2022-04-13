@@ -16,27 +16,69 @@ if (isLoged()) { ?>
     $get_shops = mysqli_query($database, 'select * from shop');
     $get_shops = mysqli_fetch_all($get_shops, MYSQLI_ASSOC);
 
+    if (isset($_POST['margin_size'])) {
+        $shop_id = $_GET['shopId'];
+        $product_category = $_POST['product_category'];
+        $margin_size = $_POST['margin_size'];
+
+        $get_margin_type = mysqli_query($database, "select * from shop_margin");
+        $get_margin_type = mysqli_fetch_all($get_margin_type, MYSQLI_ASSOC);
+
+        $errors = [];
+
+        if (!preg_match('/[0-9]/', $margin_size)) {
+            $errors[] = 'marza turi buti tik skaicius';
+        }
+
+        if ($margin_size <= 1) {
+            $errors[] = 'marza negali buti mazesne nei 1';
+        }
+
+        if (!in_array($product_category, array_column($get_margin_type, 'margin_type'))) {
+            $errors[] = 'Pasirinkta neteisinga kategorija';
+        }
+
+        if (empty($errors)) {
+
+            if (in_array($product_category, array_column($get_margin_type, 'margin_type')) && in_array($shop_id, array_column($get_margin_type, 'shop_id'))) {
+                $update_margin = mysqli_query($database, "update shop_margin set margin_size = '$margin_size' where margin_type = '$product_category' and shop_id = '$shop_id'");
+                echo 'Marza atnaujinta';
+            } else {
+                $save_margin = mysqli_query($database, "insert into shop_margin (shop_id, margin_type, margin_size) value  ('$shop_id', '$product_category', '$margin_size')");
+                echo 'Marza sukurta';
+            }
+        } else {
+            if (isset($errors)) {
+                foreach ($errors as $error) {
+                    ?>
+                    <li>
+                        <?php echo $error ?>
+                    </li>
+                <?php }
+            }
+        }
+    }
 
     ?>
     <form action="index.php" method="get">
         <table class="table">
             <tr>
-            <td>Parduotuves pasirinkimas</td>
-            <td>
-                <input type="hidden" name="page" value="shop">
-                <select name="shopId">
-                    <option value="">-</option>
-                    <?php
-                    foreach ($get_shops as $shop) {
-                        ?>
-                        <option value="<?php echo $shop['id'] ?>">
-                            <?php echo $shop['shop_name'] ?>
-                        </option>
+                <td>Parduotuves pasirinkimas</td>
+                <td>
+                    <input type="hidden" name="page" value="shop">
+                    <select name="shopId">
+                        <option value="">-</option>
                         <?php
-                    }
-                    ?>
-                </select>
-            </td>
+                        foreach ($get_shops as $shop) {
+                            ?>
+                            <option value="<?php echo $shop['id'] ?>">
+                                <?php echo $shop['shop_name'] ?>
+                            </option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center">
@@ -48,40 +90,68 @@ if (isLoged()) { ?>
     <?php
 
     if (isset($_GET['shopId'])) {
-        if (in_array($_GET['shopId'], array_column($get_shops, 'id'))) {?>
-
+        if (in_array($_GET['shopId'], array_column($get_shops, 'id'))) { ?>
 
             <h3>Marzos pridejimas</h3>
-            <form action="index.php?page=shop&shopId=<?php echo $_GET['shopId']?>" method="post">
+            <div style="display: flex">
+                <form style="margin-bottom: 0px" action="index.php?page=shop&shopId=<?php echo $_GET['shopId'] ?>"
+                      method="post">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                Maržos kategorija
+                            </td>
+                            <td>
+                                <select name="product_category">
+                                    <option value="">-</option>
+                                    <?php
+                                    foreach (MARGIN_CATEGORIES as $category) {
+                                        ?>
+                                        <option value="<?php echo $category[0] ?>">
+                                            <?php echo $category[1] ?>
+                                        </option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Marzos dydis
+                            </td>
+                            <td>
+                                <input step="0.01" type="number" name="margin_size" placeholder="1.55">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center">
+                                <button style="width: 200px; height: 30px" type="submit">Prideti</button>
+                            </td>
+                        </tr>
+
+                    </table>
+                </form>
+
                 <table class="table">
                     <tr>
+                        <th>
+                            Marzos kategorija
+                        </th>
                         <td>
-                            Maržos kategorija
-                        </td>
-                        <td>
-                            <select name="margin_size">
-                                <option>
-                                    kategorija
-                                </option>
-                            </select>
+                            Darzoves
                         </td>
                     </tr>
                     <tr>
-                        <td>
+                        <th>
                             Marzos dydis
-                        </td>
+                        </th>
                         <td>
-                            <input type="number" name="margin_size">
+                            1.5
                         </td>
                     </tr>
-                    <tr>
-                        <td colspan="2" style="text-align: center">
-                            <button style="width: 200px; height: 30px" type="submit">Prideti</button>
-                        </td>
-                    </tr>
-
                 </table>
-            </form>
+            </div>
 
 
             <?php

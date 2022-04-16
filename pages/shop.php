@@ -9,7 +9,6 @@
 </style>
 <?php
 
-
 if (isLoged()) { ?>
     <h3>Pasirinkite parduotuve</h3>
 
@@ -20,7 +19,9 @@ if (isLoged()) { ?>
     $get_margin = mysqli_query($database, "select * from shop_margin");
     $get_margin = mysqli_fetch_all($get_margin, MYSQLI_ASSOC);
 
-
+    $get_warehouse_products = mysqli_query($database, "select products.id, products.product_category, products.product_name, products.product_price, products.product_validity_days, warehouse_products.product_balance from products inner join warehouse_products on products.id = warehouse_products.product_id");
+    $get_warehouse_products = mysqli_fetch_all($get_warehouse_products, MYSQLI_ASSOC);
+    
     if (isset($_POST['margin_size'])) {
         $shop_id = $_GET['shopId'];
         $product_category = $_POST['product_category'];
@@ -52,17 +53,22 @@ if (isLoged()) { ?>
                 echo 'Marza sukurta';
             }
         } else {
-            if (isset($errors)) {
-                foreach ($errors as $error) {
-                    ?>
-                    <li>
-                        <?php echo $error ?>
-                    </li>
-                <?php }
-            }
+            displayErrors($errors);
         }
     }
+
+    if (isset($_POST['product_name'])) {
+        $product_name = $_POST['product_name'];
+        $products_amount = $_POST['products_amount'];
+        
+        
+        
+    }
+    
+    
     ?>
+        
+        
     <form action="index.php" method="get">
         <table class="table">
             <tr>
@@ -170,9 +176,46 @@ if (isLoged()) { ?>
                     </tr>
                 </table>
             </div>
-            
-            <div>
 
+            <div>
+                <h3>Produktu pridejimas</h3>
+                <form style="margin-bottom: 0px" action="index.php?page=shop&shopId=<?php echo $_GET['shopId'] ?>"
+                      method="post">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                Produktas
+                            </td>
+                            <td>
+                                <select name="product_name">
+                                    <?php
+                                    foreach ($get_warehouse_products as $product) {?>
+                                    <option value="<?php echo $product['product_name'] ?>">
+                                        <?php
+                                        echo $product['product_name'] . ' - ' . $product['product_balance'] . '.vnt';
+                                        ?>
+                                    </option>
+                                       <?php
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Kiek prideti
+                            </td>
+                            <td>
+                                <input type="number" name="products_amount">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center">
+                                <button style="width: 200px; height: 30px" type="submit">Prideti</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
             </div>
 
             <?php

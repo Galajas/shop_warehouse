@@ -24,21 +24,12 @@ if (isset($_POST['email'])) {
     if (empty($errors)) {
         $_SESSION['email'] = $email;
         header('Location: index.php');
+    } else {
+        displayErrors($errors);
     }
 }
 ?>
 <h1>Prisijungimas</h1>
-<ul>
-    <?php
-    if (isset($errors)) {
-        foreach ($errors as $error) {
-            ?>
-            <li>
-                <?php echo $error ?>
-            </li>
-        <?php }
-    } ?>
-</ul>
 <form action="index.php?page=login" method="post">
     <table>
         <tr>

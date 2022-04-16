@@ -100,13 +100,7 @@ if (isset($_POST['product_balance'])) {
         }
         mysqli_query($database, $sql);
     } else {
-        if (isset($errors)) {
-            foreach ($errors as $error) {
-                ?>
-                <li>
-                    <?php echo $error ?>
-                </li>
-            <?php }
+        displayErrors($errors);
         }
     }
 }

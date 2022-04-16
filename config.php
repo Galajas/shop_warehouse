@@ -13,8 +13,6 @@ if (!$database) {
 
 $page = $_REQUEST['page'] ?? null;
 
-//enum('dairy', 'vegetables', 'fruits', 'meat', 'drinks')
-
 const PRODUCT_CATEGORY_MEAT = ['meat', 'Mesa'];
 const PRODUCT_CATEGORY_VEGETABLES = ['vegetables', 'Darzoves'];
 const PRODUCT_CATEGORY_FRUITS = ['fruits', 'Vaisiai'];
@@ -70,6 +68,17 @@ function getEmployeesData($email, $data)
         $get_user = mysqli_query($database, "SELECT * FROM employees WHERE email = '$email'");
         $get_user = mysqli_fetch_object($get_user);
         return $get_user->$data;
+}
+
+function displayErrors($errors) {
+    if (isset($errors)) {
+        foreach ($errors as $error) {
+            ?>
+            <li>
+                <?php echo $error ?>
+            </li>
+        <?php }
+    }
 }
 
 

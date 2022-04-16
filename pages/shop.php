@@ -21,7 +21,8 @@ if (isLoged()) { ?>
 
     $get_warehouse_products = mysqli_query($database, "select products.id, products.product_category, products.product_name, products.product_price, products.product_validity_days, warehouse_products.product_balance from products inner join warehouse_products on products.id = warehouse_products.product_id");
     $get_warehouse_products = mysqli_fetch_all($get_warehouse_products, MYSQLI_ASSOC);
-    
+
+
     if (isset($_POST['margin_size'])) {
         $shop_id = $_GET['shopId'];
         $product_category = $_POST['product_category'];
@@ -57,18 +58,52 @@ if (isLoged()) { ?>
         }
     }
 
-    if (isset($_POST['product_name'])) {
-        $product_name = $_POST['product_name'];
+    if (isset($_POST['product_id'])) {
+        $shop_id = $_GET['shopId'];
+        $product_id = $_POST['product_id'];
         $products_amount = $_POST['products_amount'];
-        
-        
-        
+
+        $errors = [];
+
+        if (!preg_match('/[0-9]/', $products_amount)) {
+            $errors[] = 'kiekis turi buti tik skaicius';
+        }
+        if ($products_amount <= 1) {
+            $errors[] = 'kiekis turi buti tik sveikasis skaicius';
+        }
+
+        if (empty($errors)) {
+
+
+            $get_warehouse_product = mysqli_query($database, "select products.id, products.product_category, products.product_name, products.product_price, products.product_validity_days, warehouse_products.product_balance from products inner join warehouse_products on products.id = warehouse_products.product_id where products.id = '$product_id'");
+            $get_warehouse_product = mysqli_fetch_array($get_warehouse_product, MYSQLI_ASSOC);
+            $get_warehouse_product_type = $get_warehouse_product['product_category'];
+
+            $get_filtered_margin = mysqli_query($database, "select * from shop_margin where shop_id = '$shop_id' and margin_type = '$get_warehouse_product_type'");
+            $get_filtered_margin = mysqli_fetch_array($get_filtered_margin, MYSQLI_ASSOC);
+            
+            $new_balance = $get_warehouse_product['product_balance'] - $products_amount;
+            $date = date('Y-m-d');
+            $new_price = $get_warehouse_product['product_price'] * $get_filtered_margin['margin_size'];
+            $get_expire_days = $get_warehouse_product['product_validity_days'];
+            $expire_date = date('Y-m-d', strtotime("+$get_expire_days days"));
+
+            var_dump($new_price);
+
+
+            mysqli_query($database, "update warehouse_products set product_balance = '$new_balance' where product_id = '$product_id'");
+            mysqli_query($database, "insert into shop_products (shop_id, products_id, products_amount, product_price, product_expires) value ('$shop_id', '$product_id', '$products_amount', '$new_price', '$expire_date')");
+
+        } else {
+            displayErrors($errors);
+        }
+
     }
-    
-    
+
+
     ?>
-        
-        
+
+
     <form action="index.php" method="get">
         <table class="table">
             <tr>
@@ -187,15 +222,15 @@ if (isLoged()) { ?>
                                 Produktas
                             </td>
                             <td>
-                                <select name="product_name">
+                                <select name="product_id">
                                     <?php
-                                    foreach ($get_warehouse_products as $product) {?>
-                                    <option value="<?php echo $product['product_name'] ?>">
+                                    foreach ($get_warehouse_products as $product) { ?>
+                                        <option value="<?php echo $product['id'] ?>">
+                                            <?php
+                                            echo $product['product_name'] . ' - ' . $product['product_balance'] . '.vnt';
+                                            ?>
+                                        </option>
                                         <?php
-                                        echo $product['product_name'] . ' - ' . $product['product_balance'] . '.vnt';
-                                        ?>
-                                    </option>
-                                       <?php
                                     }
                                     ?>
                                 </select>

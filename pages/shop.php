@@ -22,11 +22,11 @@ if (isLoged()) { ?>
     $get_warehouse_products = mysqli_query($database, "select products.id, products.product_category, products.product_name, products.product_price, products.product_validity_days, warehouse_products.product_balance from products inner join warehouse_products on products.id = warehouse_products.product_id");
     $get_warehouse_products = mysqli_fetch_all($get_warehouse_products, MYSQLI_ASSOC);
 
-
     if (isset($_POST['margin_size'])) {
         $shop_id = $_GET['shopId'];
         $product_category = $_POST['product_category'];
         $margin_size = $_POST['margin_size'];
+
 
         $errors = [];
 
@@ -38,7 +38,7 @@ if (isLoged()) { ?>
             $errors[] = 'marza negali buti mazesne nei 1';
         }
 
-        if (!in_array($product_category, array_column($get_margin, 'margin_type'))) {
+        if (!in_array($product_category, array_column(MARGIN_CATEGORIES, 0))) {
             $errors[] = 'Pasirinkta neteisinga kategorija';
         }
 
@@ -73,6 +73,9 @@ if (isLoged()) { ?>
         }
 
         if (empty($errors)) {
+// tikrinimai
+            // jeigu nera marzos ka daryti
+            // jeigu galiojimo data ta pati tai pildyti, jeigu ne kurti nauja
 
 
             $get_warehouse_product = mysqli_query($database, "select products.id, products.product_category, products.product_name, products.product_price, products.product_validity_days, warehouse_products.product_balance from products inner join warehouse_products on products.id = warehouse_products.product_id where products.id = '$product_id'");

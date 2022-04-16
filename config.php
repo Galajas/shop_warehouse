@@ -48,9 +48,9 @@ function mutateArray($arrays)
     foreach ($arrays as $array) {
         $first = $array[0];
         $second = $array[1];
-        $combo[$first] = $second;
+        $added[$first] = $second;
     }
-    return $combo;
+    return $added;
 }
 
 

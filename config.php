@@ -43,7 +43,8 @@ const MARGIN_CATEGORIES = [
     MARGIN_CATEGORY_COMMON
 ];
 
-function mutateArray ($arrays) {
+function mutateArray($arrays)
+{
     foreach ($arrays as $array) {
         $first = $array[0];
         $second = $array[1];
@@ -64,20 +65,26 @@ function isLoged(): bool
 
 function getEmployeesData($email, $data)
 {
-        $database = mysqli_connect('127.0.0.1', 'root', '', 'shop_warehouse');
-        $get_user = mysqli_query($database, "SELECT * FROM employees WHERE email = '$email'");
-        $get_user = mysqli_fetch_object($get_user);
-        return $get_user->$data;
+    $database = mysqli_connect('127.0.0.1', 'root', '', 'shop_warehouse');
+    $get_user = mysqli_query($database, "SELECT * FROM employees WHERE email = '$email'");
+    $get_user = mysqli_fetch_object($get_user);
+    return $get_user->$data;
 }
 
-function displayErrors($errors) {
+function displayErrors($errors)
+{
     if (isset($errors)) {
-        foreach ($errors as $error) {
-            ?>
-            <li>
-                <?php echo $error ?>
-            </li>
-        <?php }
+        ?>
+        <ul>
+            <?php
+            foreach ($errors as $error) {
+                ?>
+                <li>
+                    <?php echo $error ?>
+                </li>
+            <?php } ?>
+        </ul>
+        <?php
     }
 }
 

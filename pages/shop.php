@@ -26,7 +26,6 @@ if (isLoged()) { ?>
         $product_category = $_POST['product_category'];
         $margin_size = $_POST['margin_size'];
 
-
         $errors = [];
 
         if (!preg_match('/[0-9]/', $margin_size)) {
@@ -41,8 +40,11 @@ if (isLoged()) { ?>
             $errors[] = 'Pasirinkta neteisinga kategorija';
         }
 
+        $get_filtered_margin = mysqli_query($database, "select * from shop_margin where shop_id = '$shop_id'");
+        $get_filtered_margin = mysqli_fetch_all($get_filtered_margin, MYSQLI_ASSOC);
+
         if (empty($errors)) {
-            if (in_array($product_category, array_column($get_margin, 'margin_type')) && in_array($shop_id, array_column($get_margin, 'shop_id'))) {
+            if (in_array($product_category, array_column($get_filtered_margin, 'margin_type'))) {
                 $update_margin = mysqli_query($database, "update shop_margin set margin_size = '$margin_size' where margin_type = '$product_category' and shop_id = '$shop_id'");
                 echo 'Marza atnaujinta';
             } else {
@@ -97,8 +99,9 @@ if (isLoged()) { ?>
             $get_margin_via_shop = mysqli_fetch_all($get_margin_via_shop, MYSQLI_ASSOC);
             ?>
             <h2><?php echo mysqli_fetch_row(mysqli_query($database, 'select shop_name from shop where id = ' . "$shop_id" . ' '))[0]; ?></h2>
-            <h3>Marzos pridejimas</h3>
+
             <div style="display: flex">
+                <h3>Marzos pridejimas</h3>
                 <form style="margin-bottom: 0px" action="index.php?page=shop&shopId=<?php echo $_GET['shopId'] ?>"
                       method="post">
                     <table class="table">
@@ -168,7 +171,9 @@ if (isLoged()) { ?>
                 </table>
             </div>
             
+            <div>
 
+            </div>
 
             <?php
         } else {

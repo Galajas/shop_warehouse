@@ -44,8 +44,8 @@ if (isLoged()) {
                 $errors[] = 'marza turi buti tik skaicius';
             }
 
-            if ($margin_size <= 1) {
-                $errors[] = 'marza negali buti mazesne nei 1';
+            if ($margin_size < 0.01) {
+                $errors[] = 'marza negali buti nulis arba neigemas skaicius';
             }
 
             if (!in_array($product_category, array_column(MARGIN_CATEGORIES, 0))) {
@@ -81,7 +81,7 @@ if (isLoged()) {
             if (!preg_match('/[0-9]/', $products_amount)) {
                 $errors[] = 'kiekis turi buti tik skaicius';
             }
-            if ($products_amount <= 1) {
+            if ($products_amount < 1) {
                 $errors[] = 'kiekis turi buti tik sveikasis skaicius';
             }
 
@@ -219,7 +219,7 @@ if (isLoged()) {
                 </div>
 
                 <div>
-                    <h3>Produktu pridejimas</h3>
+                    <h3>Produktu pridejimas is sandelio</h3>
                     <form style="margin-bottom: 0px" action="index.php?page=shop&shopId=<?php echo $_GET['shopId'] ?>"
                           method="post">
                         <table class="table">

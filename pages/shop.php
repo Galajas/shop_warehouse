@@ -109,7 +109,6 @@ if (isLoged()) {
             } else {
                 displayErrors($errors);
             }
-
         }
         ?>
 
@@ -259,6 +258,107 @@ if (isLoged()) {
                     </form>
                 </div>
 
+                <div style="display: flex">
+                    <div>
+                        <h3>Produktai parduotuveje</h3>
+                        <table class="table">
+                            <tr>
+                                <th>
+                                    Produktas
+                                </th>
+                                <th>
+                                    Produkto kainą
+                                </th>
+                                <th>
+                                    Kiekis parduotuveje
+                                </th>
+                                <th>
+                                    Iki kada galioja
+                                </th>
+                            </tr>
+                            <?php
+                            $get_shop_products_not_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 0");
+                            $get_shop_products_not_utilized = mysqli_fetch_all($get_shop_products_not_utilized, MYSQLI_ASSOC);
+                            foreach ($get_shop_products_not_utilized as $product) {
+                                $product_id = $product['products_id'];
+                                $product_name = mysqli_query($database, "SELECT product_name FROM products where id = '$product_id'");
+                                $product_name = mysqli_fetch_object($product_name);
+                                $product_name = $product_name->product_name;
+                                $product_price = $product['product_price'];
+                                $product_amount = $product['products_amount'];
+                                $product_validation = $product['product_expires'];
+                                ?>
+
+                                <tr>
+                                    <td>
+                                        <?php echo $product_name ?>
+                                    </td>
+                                    <td>
+                                        <?php echo round($product_price, 2) ?>€
+                                    </td>
+                                    <td>
+                                        <?php echo $product_amount ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $product_validation ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </table>
+                    </div>
+                    <div>
+                        <h3>Produktai utilizuoti</h3>
+                        <table class="table">
+                            <tr>
+                                <th>
+                                    Produktas
+                                </th>
+                                <th>
+                                    Produkto kainą
+                                </th>
+                                <th>
+                                    Kiekis parduotuveje
+                                </th>
+                                <th>
+                                    Iki kada galioja
+                                </th>
+                            </tr>
+                            <?php
+                            $get_shop_products_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 1");
+                            $get_shop_products_utilized = mysqli_fetch_all($get_shop_products_utilized, MYSQLI_ASSOC);
+
+                            foreach ($get_shop_products_utilized as $product) {
+                                $product_id = $product['products_id'];
+                                $product_name = mysqli_query($database, "SELECT product_name FROM products where id = '$product_id'");
+                                $product_name = mysqli_fetch_object($product_name);
+                                $product_name = $product_name->product_name;
+                                $product_price = $product['product_price'];
+                                $product_amount = $product['products_amount'];
+                                $product_validation = $product['product_expires'];
+                                ?>
+
+                                <tr>
+                                    <td>
+                                        <?php echo $product_name ?>
+                                    </td>
+                                    <td>
+                                        <?php echo round($product_price, 2) ?>€
+                                    </td>
+                                    <td>
+                                        <?php echo $product_amount ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $product_validation ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </table>
+                    </div>
+                </div>
                 <?php
             } else {
                 header('Location: index.php?page=shop');

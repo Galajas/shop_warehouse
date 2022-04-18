@@ -279,12 +279,7 @@ if (isLoged()) {
 
                 $product_balance = mysqli_query($database, "SELECT product_balance FROM warehouse_products where product_id = '$id'");
                 $product_balance = mysqli_fetch_object($product_balance);
-
-                if ($product_balance != null) {
-                    $product_balance = $product_balance->product_balance;
-                } else {
-                    $product_balance = 0;
-                }
+                $product_balance = $product_balance->product_balance;
                 ?>
                 <tr>
                     <td>

@@ -31,6 +31,7 @@ if (isLoged()) {
             $get_shop_products = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id'");
             $get_shop_products = mysqli_fetch_all($get_shop_products, MYSQLI_ASSOC);
 
+            mysqli_query($database, 'update shop_products set utilized = if(product_expires < curdate(), 1, 0)');
         }
 
         if (isset($_POST['margin_size'])) {

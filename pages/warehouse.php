@@ -23,19 +23,9 @@ if (isLoged()) {
                 $product_price = $_POST['product_price'];
                 $product_validity_days = $_POST['product_validity_days'];
 
-                $get_product_name = mysqli_query($database, "SELECT * FROM products where product_name = '$product_name'");
-                $get_product_name = mysqli_fetch_row($get_product_name);
-
                 if (!empty($product_name) && !empty($product_category) && !empty($product_price) && !empty($product_validity_days)) {
-                    if ($get_product_name == $product_name) {
-                        $update_product = mysqli_query($database, "update products set product_category = '$product_category', product_name = '$product_name', product_price = '$product_price', product_validity_days = '$product_validity_days' where id = '$id'");
-                        header('Location: index.php?page=warehouse');
-                    } elseif ($get_product_name != null) {
-                        echo 'Toks produktas jau yra';
-                    } else {
-                        $update_product = mysqli_query($database, "update products set product_category = '$product_category', product_name = '$product_name', product_price = '$product_price', product_validity_days = '$product_validity_days' where id = '$id'");
-                        header('Location: index.php?page=warehouse');
-                    }
+                    $update_product = mysqli_query($database, "update products set product_category = '$product_category', product_name = '$product_name', product_price = '$product_price', product_validity_days = '$product_validity_days' where id = '$id'");
+                    header('Location: index.php?page=warehouse');
                 } else {
                     echo 'Kazkuris laukas tuscias prasome uzpapildyti';
                 }
@@ -61,14 +51,7 @@ if (isLoged()) {
                     mysqli_query($database, $sql);
                     echo 'Produktas pridetas';
                 } else {
-                    if (isset($errors)) {
-                        foreach ($errors as $error) {
-                            ?>
-                            <li>
-                                <?php echo $error ?>
-                            </li>
-                        <?php }
-                    }
+                    displayErrors($errors);
                 }
             }
         }

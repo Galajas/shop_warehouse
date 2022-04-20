@@ -14,6 +14,7 @@ var_dump(isset($_SESSION['cart_id']));
 $get_shops = mysqli_query($database, 'select * from shop');
 $get_shops = mysqli_fetch_all($get_shops, MYSQLI_ASSOC);
 
+
 if (isset($_GET['shopId'])) {
     $shop_id = $_GET['shopId'];
 }
@@ -49,12 +50,19 @@ if (isset($_POST['amount'])) {
             $_SESSION['cart_id'] = $cart_id;
         }
 
+        $get_cart_data = mysqli_query($database, "select * from carts where id = '$cart_id'");
+        $get_cart_data = mysqli_fetch_array($get_cart_data, MYSQLI_ASSOC);
+
         mysqli_query($database, "insert into cart_items (cart_id, product_id, amount, sum) value ('$cart_id', '$product_id', '$product_amount', '$sum')");
         $new_shop_amount = $get_shop_product_data['products_amount'] - $product_amount;
-        mysqli_query($database, "update shop_products set products_amount = '$new_shop_amount'");
+        mysqli_query($database, "update shop_products set products_amount = '$new_shop_amount' where id = '$id'");
 
-        if ($get_shop_product_data['products_amount'] == 0) {
-            mysqli_query($database, "update shop_products set sold_out = 1");
+        $update_sum = $get_cart_data['paid'] + $sum;
+        mysqli_query($database, "update carts set paid = '$update_sum' where id = '$cart_id'");
+        
+
+        if ($new_shop_amount == 0) {
+            mysqli_query($database, "update shop_products set sold_out = 1 where id = '$id'");
         }
     } else {
         displayErrors($errors);

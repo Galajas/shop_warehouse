@@ -12,9 +12,15 @@
 $get_shops = mysqli_query($database, 'select * from shop');
 $get_shops = mysqli_fetch_all($get_shops, MYSQLI_ASSOC);
 
+if (isset($_SESSION['cart_id'])) {
+    $cart_id = $_SESSION['cart_id'];
+    $get_shop_id = mysqli_query($database, "select shop_id from carts where id = '$cart_id'");
+    $get_shop_id = mysqli_fetch_array($get_shop_id, MYSQLI_ASSOC);
+    $get_shop_id = $get_shop_id['shop_id'];
 
-if (isset($_GET['shopId'])) {
-    $shop_id = $_GET['shopId'];
+    $shop_id = $get_shop_id;
+} else {
+    $shop_id = $_GET['shopId'] ?? null;
 }
 
 if (isset($_POST['amount'])) {
@@ -65,9 +71,7 @@ if (isset($_POST['amount'])) {
     } else {
         displayErrors($errors);
     }
-
 }
-
 
 ?>
 
@@ -127,7 +131,7 @@ if (isset($shop_id)) {
                             <?php echo $product_validation ?>
                         </td>
 
-                        <form action="index.php?page=shop_cart&shopId=<?php echo $_GET['shopId'] ?>"
+                        <form action="index.php?page=shop_cart&shopId=<?php echo $shop_id ?>"
                               method="post">
                             <td>
                                 <input type="hidden" name="id" value="<?php echo $id ?>">

@@ -9,8 +9,6 @@
 
 <?php
 
-var_dump(isset($_SESSION['cart_id']));
-
 $get_shops = mysqli_query($database, 'select * from shop');
 $get_shops = mysqli_fetch_all($get_shops, MYSQLI_ASSOC);
 
@@ -59,7 +57,7 @@ if (isset($_POST['amount'])) {
 
         $update_sum = $get_cart_data['paid'] + $sum;
         mysqli_query($database, "update carts set paid = '$update_sum' where id = '$cart_id'");
-        
+
 
         if ($new_shop_amount == 0) {
             mysqli_query($database, "update shop_products set sold_out = 1 where id = '$id'");
@@ -69,6 +67,7 @@ if (isset($_POST['amount'])) {
     }
 
 }
+
 
 ?>
 
@@ -138,7 +137,7 @@ if (isset($shop_id)) {
                             </td>
 
                             <td>
-                                <button>Pridėti i krepseli</button>
+                                <button type="submit">Pridėti i krepseli</button>
                             </td>
 
                         </form>
@@ -178,7 +177,19 @@ if (isset($shop_id)) {
                 </tr>
                 <tr>
                     <td colspan="3" style="text-align: center">
+                        Viso 23.45€
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: center">
                         <button>Apmoketi</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: center">
+                        <form action="index.php?page=cancel_cart" method="post">
+                        <button type="submit">Atsaukti pirkima</button>
+                        </form>
                     </td>
                 </tr>
             </table>

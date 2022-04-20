@@ -1,7 +1,7 @@
 <h1>Pagrindinis</h1>
 <h3>
     <?php
-    unset($_SESSION['cart_id']);
+    
     if (isLoged()) {
         ?> Sveiki <?php
         $email = $_SESSION['email'];
@@ -19,7 +19,7 @@
         <?php
     } else {
         ?>
-        Prasome prisijungti.
+        Sveiki atvyke i parduotuve.
         <?php
     }
     ?>

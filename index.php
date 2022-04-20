@@ -14,6 +14,7 @@ include_once 'config.php';
     table {
         padding: 10px;
     }
+
     td {
         padding: 10px;
     }
@@ -25,6 +26,9 @@ include_once 'config.php';
             <a href="index.php">Home</a>
         </td>
         <?php if (isLoged() === false) { ?>
+            <td>
+                <a href="index.php?page=shop_cart">Pirkimas</a>
+            </td>
             <td>
                 <a href="index.php?page=login">Login</a>
             </td>
@@ -74,6 +78,9 @@ switch ($page) {
         break;
     case 'shop':
         include 'pages/shop.php';
+        break;
+    case 'shop_cart':
+        include 'pages/shop_cart.php';
         break;
     case 'logout':
         include 'pages/logout.php';

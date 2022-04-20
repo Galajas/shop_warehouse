@@ -19,10 +19,7 @@ if (isLoged()) {
 
         $get_margin = mysqli_query($database, "select * from shop_margin");
         $get_margin = mysqli_fetch_all($get_margin, MYSQLI_ASSOC);
-
-        $get_warehouse_products = mysqli_query($database, "select products.id, products.product_category, products.product_name, products.product_price, products.product_validity_days, warehouse_products.product_balance from products inner join warehouse_products on products.id = warehouse_products.product_id");
-        $get_warehouse_products = mysqli_fetch_all($get_warehouse_products, MYSQLI_ASSOC);
-
+        
         if (isset($_GET['shopId'])) {
             $shop_id = $_GET['shopId'];
             $get_margin_by_shopId = mysqli_query($database, "select * from shop_margin where shop_id = '$shop_id'");
@@ -110,6 +107,9 @@ if (isLoged()) {
                 displayErrors($errors);
             }
         }
+
+        $get_warehouse_products = mysqli_query($database, "select products.id, products.product_category, products.product_name, products.product_price, products.product_validity_days, warehouse_products.product_balance from products inner join warehouse_products on products.id = warehouse_products.product_id");
+        $get_warehouse_products = mysqli_fetch_all($get_warehouse_products, MYSQLI_ASSOC);
         ?>
 
         <form action="index.php" method="get">
@@ -277,7 +277,7 @@ if (isLoged()) {
                                 </th>
                             </tr>
                             <?php
-                            $get_shop_products_not_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 0");
+                            $get_shop_products_not_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 0 and sold_out = 0");
                             $get_shop_products_not_utilized = mysqli_fetch_all($get_shop_products_not_utilized, MYSQLI_ASSOC);
                             foreach ($get_shop_products_not_utilized as $product) {
                                 $product_id = $product['products_id'];
@@ -309,7 +309,7 @@ if (isLoged()) {
                         </table>
                     </div>
                     <div>
-                        <h3>Produktai utilizuoti</h3>
+                        <h3>Produktai neparduoti bet utilizuoti</h3>
                         <table class="table">
                             <tr>
                                 <th>
@@ -326,7 +326,7 @@ if (isLoged()) {
                                 </th>
                             </tr>
                             <?php
-                            $get_shop_products_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 1");
+                            $get_shop_products_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 1 and sold_out = 0");
                             $get_shop_products_utilized = mysqli_fetch_all($get_shop_products_utilized, MYSQLI_ASSOC);
 
                             foreach ($get_shop_products_utilized as $product) {
@@ -351,6 +351,44 @@ if (isLoged()) {
                                     </td>
                                     <td>
                                         <?php echo $product_validation ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                        </table>
+                    </div>
+                    <div>
+                        <h3>Parduoti produktai</h3>
+                        <table class="table">
+                            <tr>
+                                <th>
+                                    Produktas
+                                </th>
+                                <th>
+                                    Produkto kainą
+                                </th>
+                            </tr>
+                            <?php
+                            // cia reiktu join naudoti sujungti sold_out shop product su cart_items -> product_id.
+
+                            $get_shop_products_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 0 and sold_out = 1");
+                            $get_shop_products_utilized = mysqli_fetch_all($get_shop_products_utilized, MYSQLI_ASSOC);
+
+                            foreach ($get_shop_products_utilized as $product) {
+                                $product_id = $product['products_id'];
+                                $product_name = mysqli_query($database, "SELECT product_name FROM products where id = '$product_id'");
+                                $product_name = mysqli_fetch_object($product_name);
+                                $product_name = $product_name->product_name;
+                                $product_price = $product['product_price'];
+                                ?>
+
+                                <tr>
+                                    <td>
+                                        <?php echo $product_name ?>
+                                    </td>
+                                    <td>
+                                        <?php echo round($product_price, 2) ?>€
                                     </td>
                                 </tr>
                                 <?php

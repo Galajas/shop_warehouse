@@ -82,8 +82,8 @@ switch ($page) {
     case 'shop_cart':
         include 'pages/shop_cart.php';
         break;
-    case 'cancel_cart':
-        include 'pages/cancel_cart.php';
+    case 'finish_shopping':
+        include 'pages/finish_shopping.php';
         break;
     case 'logout':
         include 'pages/logout.php';

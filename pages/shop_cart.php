@@ -152,54 +152,79 @@ if (isset($shop_id)) {
                 ?>
             </table>
         </div>
+        <?php
+        if (isset($_SESSION['cart_id'])) {
+            ?>
+            <div>
+                <h3>Parduotuves krepselis</h3>
+                <table class="table">
+                    <tr>
+                        <th>
+                            Preke
+                        </th>
 
-        <div>
-            <h3>Parduotuves krepselis</h3>
-            <table class="table">
-                <tr>
-                    <th>
-                        Preke
-                    </th>
+                        <th>
+                            Kiekis
+                        </th>
+                        <th>
+                            Suma
+                        </th>
+                    </tr>
+                    <?php
+                    $get_cart_items = mysqli_query($database, "select * from cart_items where cart_id = '$cart_id'");
+                    $get_cart_items = mysqli_fetch_all($get_cart_items, MYSQLI_ASSOC);
 
-                    <th>
-                        Kiekis
-                    </th>
-                    <th>
-                        Suma
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        Desreles
-                    </td>
-                    <td>
-                        3 vnt.
-                    </td>
-                    <td>
-                        23.45€
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="text-align: center">
-                        Viso 23.45€
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="text-align: center">
-                        <button>Apmoketi</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="text-align: center">
-                        <form action="index.php?page=cancel_cart" method="post">
-                        <button type="submit">Atsaukti pirkima</button>
-                        </form>
-                    </td>
-                </tr>
-            </table>
+                    foreach ($get_cart_items as $item) {
+                        $product_id = $item['product_id'];
+                        $get_item_name = mysqli_query($database, "select product_name from products where id = '$product_id'");
+                        $get_item_name = mysqli_fetch_column($get_item_name);
 
-        </div>
+                        $product_amount = $item['amount'];
+                        $product_sum = $item['sum'];
 
+                        ?>
+                        <tr>
+                            <td>
+                                <?php echo $get_item_name ?>
+                            </td>
+                            <td>
+                                <?php echo $product_amount ?>
+                            </td>
+                            <td>
+                                <?php echo round($product_sum, 2) ?>€
+                            </td>
+                        </tr>
+
+                        <?php
+                    }
+
+                    ?>
+
+                    <tr>
+                        <td colspan="3" style="text-align: center">
+                            Viso: <?php echo round(mysqli_fetch_column(mysqli_query($database, "select SUM(sum) cartSum from cart_items where cart_id = '$cart_id'")), 2); ?>
+                            €
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center">
+                            <form action="index.php?page=finish_shopping&action=done" method="post">
+                                <button type="submit">Apmoketi</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center">
+                            <form action="index.php?page=finish_shopping&action=cancel" method="post">
+                                <button type="submit">Atsaukti pirkima</button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <?php
+        }
+        ?>
     </div>
 
     <?php

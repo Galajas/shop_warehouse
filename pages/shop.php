@@ -116,36 +116,8 @@ if (isLoged()) {
 
         $get_warehouse_products = mysqli_query($database, "select products.id, products.product_category, products.product_name, products.product_price, products.product_validity_days, warehouse_products.product_balance from products inner join warehouse_products on products.id = warehouse_products.product_id");
         $get_warehouse_products = mysqli_fetch_all($get_warehouse_products, MYSQLI_ASSOC);
-        ?>
 
-        <form action="index.php" method="get">
-            <table class="table">
-                <tr>
-                    <td>Parduotuves pasirinkimas</td>
-                    <td>
-                        <input type="hidden" name="page" value="shop">
-                        <select name="shopId">
-                            <option value="">-</option>
-                            <?php
-                            foreach ($get_shops as $shop) {
-                                ?>
-                                <option value="<?php echo $shop['id'] ?>">
-                                    <?php echo $shop['shop_name'] ?>
-                                </option>
-                                <?php
-                            }
-                            ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="text-align: center">
-                        <button style="width: 200px; height: 30px" type="submit">Pasirinkti</button>
-                    </td>
-                </tr>
-            </table>
-        </form>
-        <?php
+        setShop();
 
         if (isset($shop_id)) {
             if (in_array($shop_id, array_column($get_shops, 'id'))) {

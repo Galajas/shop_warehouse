@@ -226,36 +226,7 @@ if (isset($shop_id)) {
         }
         ?>
     </div>
-
     <?php
 } else {
-    ?>
-    <form action="index.php" method="get">
-        <table class="table">
-            <tr>
-                <td>Parduotuves pasirinkimas</td>
-                <td>
-                    <input type="hidden" name="page" value="shop_cart">
-                    <select name="shopId">
-                        <option value="">-</option>
-                        <?php
-                        foreach ($get_shops as $shop) {
-                            ?>
-                            <option value="<?php echo $shop['id'] ?>">
-                                <?php echo $shop['shop_name'] ?>
-                            </option>
-                            <?php
-                        }
-                        ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: center">
-                    <button style="width: 200px; height: 30px" type="submit">Pasirinkti</button>
-                </td>
-            </tr>
-        </table>
-    </form>
-    <?php
+    setShop();
 }

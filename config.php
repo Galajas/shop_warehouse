@@ -9,6 +9,8 @@ $database = mysqli_connect('127.0.0.1', 'root', '', 'shop_warehouse');
 
 if (!$database) {
     die("connection failed: " . mysqli_connect_error());
+} else {
+    mysqli_query($database, 'update shop_products set utilized = if(product_expires < curdate(), 1, 0)');
 }
 
 $page = $_REQUEST['page'] ?? null;
@@ -86,6 +88,42 @@ function displayErrors($errors)
         </ul>
         <?php
     }
+}
+
+function setShop () {
+    $database = mysqli_connect('127.0.0.1', 'root', '', 'shop_warehouse');
+    $get_shops = mysqli_query($database, 'select * from shop');
+    $get_shops = mysqli_fetch_all($get_shops, MYSQLI_ASSOC);
+    $page = $_REQUEST['page'] ?? null;
+    ?>
+    <form action="index.php" method="get">
+        <table class="table">
+            <tr>
+                <td>Parduotuves pasirinkimas</td>
+                <td>
+                    <input type="hidden" name="page" value="<?php echo $page ?>">
+                    <select name="shopId">
+                        <option value="">-</option>
+                        <?php
+                        foreach ($get_shops as $shop) {
+                            ?>
+                            <option value="<?php echo $shop['id'] ?>">
+                                <?php echo $shop['shop_name'] ?>
+                            </option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center">
+                    <button style="width: 200px; height: 30px" type="submit">Pasirinkti</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+<?php
 }
 
 

@@ -112,9 +112,21 @@ if (isset($shop_id)) {
                     $product_name = mysqli_query($database, "SELECT product_name FROM products where id = '$product_id'");
                     $product_name = mysqli_fetch_object($product_name);
                     $product_name = $product_name->product_name;
-                    $product_price = $product['product_price'];
+                    $product_price = round($product['product_price'], 2);
                     $product_amount = $product['products_amount'];
                     $product_validation = $product['product_expires'];
+
+
+                    $get_margin_by_shopIdAndValidity_to_end = mysqli_query($database, "select margin_size from shop_margin where shop_id = '$shop_id' and margin_type = 'validity_to_end'");
+                    $get_margin_by_shopIdAndValidity_to_end = mysqli_fetch_column($get_margin_by_shopIdAndValidity_to_end);
+
+
+                    if ($product_validation < date('Y-m-d', strtotime(date('Y-m-d') . '+3 day'))) {
+                        if ($get_margin_by_shopIdAndValidity_to_end) {
+                            $product_price_with_discount = round($product['product_price'] * $get_margin_by_shopIdAndValidity_to_end, 2);
+                        }
+                    }
+
                     ?>
 
                     <tr>
@@ -122,7 +134,18 @@ if (isset($shop_id)) {
                             <?php echo $product_name ?>
                         </td>
                         <td>
-                            <?php echo round($product_price, 2) ?>€
+                            <?php
+                            if ($product_validation < date('Y-m-d', strtotime(date('Y-m-d') . '+3 day'))) {
+                                if ($get_margin_by_shopIdAndValidity_to_end) {
+                                    echo "Akcija ($product_price €)  $product_price_with_discount";
+                                    $product_price = $product_price_with_discount;
+                                } else {
+                                    echo $product_price;
+                                }
+                            }else {
+                                echo $product_price;
+                            }
+                            ?>€
                         </td>
                         <td>
                             <?php echo $product_amount ?>

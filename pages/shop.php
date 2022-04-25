@@ -27,14 +27,6 @@ if (isLoged()) {
             
             $get_shop_products = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id'");
             $get_shop_products = mysqli_fetch_all($get_shop_products, MYSQLI_ASSOC);
-
-
-            $get_margin_by_shopIdAndValidity_to_end = mysqli_query($database, "select margin_size from shop_margin where shop_id = '$shop_id' and margin_type = 'validity_to_end'");
-            $get_margin_by_shopIdAndValidity_to_end = mysqli_fetch_column($get_margin_by_shopIdAndValidity_to_end);
-
-            if ($get_margin_by_shopIdAndValidity_to_end) {
-                    mysqli_query($database, 'update shop_products set product_price = if(product_expires < DATE_ADD(curdate(), interval 3 day), product_price * '. $get_margin_by_shopIdAndValidity_to_end .', product_price) where shop_id = '. $shop_id );
-            }
         }
 
         if (isset($_POST['margin_size'])) {

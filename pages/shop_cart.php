@@ -41,6 +41,9 @@ if (isset($_POST['amount'])) {
     if ($product_amount < 1) {
         $errors[] = 'kiekis turi buti tik sveikasis skaicius';
     }
+    if (empty($product_amount)) {
+        $errors[] = 'laukas negali buti tuscias';
+    }
     if ($product_amount > $get_shop_product_data['products_amount']) {
         $errors[] = 'Nera sandelyje tokio kiekio';
     }
@@ -57,7 +60,8 @@ if (isset($_POST['amount'])) {
         $get_cart_data = mysqli_query($database, "select * from carts where id = '$cart_id'");
         $get_cart_data = mysqli_fetch_array($get_cart_data, MYSQLI_ASSOC);
 
-        mysqli_query($database, "insert into cart_items (cart_id, product_id, amount, sum) value ('$cart_id', '$product_id', '$product_amount', '$sum')");
+        mysqli_query($database, "insert into cart_items (cart_id, product_id, amount, sum) value ('$cart_id', '$id', '$product_amount', '$sum')");
+        
         $new_shop_amount = $get_shop_product_data['products_amount'] - $product_amount;
         mysqli_query($database, "update shop_products set products_amount = '$new_shop_amount' where id = '$id'");
 
@@ -72,7 +76,6 @@ if (isset($_POST['amount'])) {
         displayErrors($errors);
     }
 }
-
 ?>
 
 <?php
@@ -115,12 +118,10 @@ if (isset($shop_id)) {
                     $product_price = round($product['product_price'], 2);
                     $product_amount = $product['products_amount'];
                     $product_validation = $product['product_expires'];
-
-
+                    
                     $get_margin_by_shopIdAndValidity_to_end = mysqli_query($database, "select margin_size from shop_margin where shop_id = '$shop_id' and margin_type = 'validity_to_end'");
                     $get_margin_by_shopIdAndValidity_to_end = mysqli_fetch_column($get_margin_by_shopIdAndValidity_to_end);
-
-
+                    
                     if ($product_validation < date('Y-m-d', strtotime(date('Y-m-d') . '+3 day'))) {
                         if ($get_margin_by_shopIdAndValidity_to_end) {
                             $product_price_with_discount = round($product['product_price'] * $get_margin_by_shopIdAndValidity_to_end, 2);
@@ -199,7 +200,9 @@ if (isset($shop_id)) {
 
                     foreach ($get_cart_items as $item) {
                         $product_id = $item['product_id'];
-                        $get_item_name = mysqli_query($database, "select product_name from products where id = '$product_id'");
+                        $get_item_name = mysqli_query($database, "select products_id from shop_products where id = '$product_id'");
+                        $get_item_name = mysqli_fetch_column($get_item_name);
+                        $get_item_name = mysqli_query($database, "select product_name from products where id = '$get_item_name'");
                         $get_item_name = mysqli_fetch_column($get_item_name);
 
                         $product_amount = $item['amount'];

@@ -30,6 +30,9 @@ include_once 'config.php';
                 <a href="index.php?page=shop_cart">Pirkimas</a>
             </td>
             <td>
+                <a href="index.php?page=statistics">Statistika</a>
+            </td>
+            <td>
                 <a href="index.php?page=login">Login</a>
             </td>
             <td>
@@ -81,6 +84,9 @@ switch ($page) {
         break;
     case 'shop_cart':
         include 'pages/shop_cart.php';
+        break;
+    case 'statistics':
+        include 'pages/statistics.php';
         break;
     case 'finish_shopping':
         include 'pages/finish_shopping.php';

@@ -247,7 +247,7 @@ if (isLoged()) {
                                 </th>
                             </tr>
                             <?php
-                            $get_shop_products_not_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 0 and sold_out = 0");
+                            $get_shop_products_not_utilized = mysqli_query($database, "select * from shop_products where (shop_id = '$shop_id' and utilized = 0 and products_amount !=0)");
                             $get_shop_products_not_utilized = mysqli_fetch_all($get_shop_products_not_utilized, MYSQLI_ASSOC);
                             foreach ($get_shop_products_not_utilized as $product) {
                                 $product_id = $product['products_id'];
@@ -279,7 +279,7 @@ if (isLoged()) {
                         </table>
                     </div>
                     <div>
-                        <h3>Produktai neparduoti bet utilizuoti</h3>
+                        <h3>Produktai neparduoti ir utilizuoti</h3>
                         <table class="table">
                             <tr>
                                 <th>
@@ -296,7 +296,7 @@ if (isLoged()) {
                                 </th>
                             </tr>
                             <?php
-                            $get_shop_products_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 1 and sold_out = 0");
+                            $get_shop_products_utilized = mysqli_query($database, "select * from shop_products where (shop_id = '$shop_id' and utilized = 0 and products_amount !=0)");
                             $get_shop_products_utilized = mysqli_fetch_all($get_shop_products_utilized, MYSQLI_ASSOC);
 
                             foreach ($get_shop_products_utilized as $product) {

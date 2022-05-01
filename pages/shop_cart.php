@@ -69,9 +69,9 @@ if (isset($_POST['amount'])) {
         mysqli_query($database, "update carts set paid = '$update_sum' where id = '$cart_id'");
 
 
-        if ($new_shop_amount == 0) {
-            mysqli_query($database, "update shop_products set sold_out = 1 where id = '$id'");
-        }
+//        if ($new_shop_amount == 0) {
+//            mysqli_query($database, "update shop_products set sold_out = 1 where id = '$id'");
+//        }
     } else {
         displayErrors($errors);
     }
@@ -107,7 +107,7 @@ if (isset($shop_id)) {
                     </th>
                 </tr>
                 <?php
-                $get_shop_products_not_utilized = mysqli_query($database, "select * from shop_products where shop_id = '$shop_id' and utilized = 0 and sold_out = 0");
+                $get_shop_products_not_utilized = mysqli_query($database, "select * from shop_products where (shop_id = '$shop_id' and utilized = 0 and products_amount !=0)");
                 $get_shop_products_not_utilized = mysqli_fetch_all($get_shop_products_not_utilized, MYSQLI_ASSOC);
                 foreach ($get_shop_products_not_utilized as $product) {
                     $id = $product['id'];

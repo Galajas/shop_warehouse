@@ -296,7 +296,7 @@ if (isLoged()) {
                                 </th>
                             </tr>
                             <?php
-                            $get_shop_products_utilized = mysqli_query($database, "select * from shop_products where (shop_id = '$shop_id' and utilized = 0 and products_amount !=0)");
+                            $get_shop_products_utilized = mysqli_query($database, "select * from shop_products where (shop_id = '$shop_id' and utilized = 1 and products_amount !=0)");
                             $get_shop_products_utilized = mysqli_fetch_all($get_shop_products_utilized, MYSQLI_ASSOC);
 
                             foreach ($get_shop_products_utilized as $product) {

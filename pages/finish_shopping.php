@@ -18,7 +18,6 @@ if ($page_action == 'null') {
         $get_shop_product_amount = mysqli_fetch_column($get_shop_product_amount);
 
         if ($get_shop_product_amount == 0) {
-            mysqli_query($database, "update shop_products set sold_out = 0 where id = '$product_id'");
             mysqli_query($database, "update shop_products set products_amount = '$amount' where id = '$product_id'");
         }
 
